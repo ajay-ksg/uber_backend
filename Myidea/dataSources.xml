@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
+    <data-source source="LOCAL" name="PostgreSQL - uber@localhost" uuid="1f5d511d-a8e2-4a0f-8ee5-c8c531fbb127">
+      <driver-ref>postgresql</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.postgresql.Driver</jdbc-driver>
+      <jdbc-url>jdbc:postgresql://localhost:5432/uber</jdbc-url>
+    </data-source>
+    <data-source source="LOCAL" name="Project/Hibernate" uuid="f9770453-ab16-40d7-a3ed-ec5d26bd03ab">
+      <driver-ref>postgresql</driver-ref>
+      <synchronize>true</synchronize>
+      <imported>true</imported>
+      <remarks>Hibernate</remarks>
+      <jdbc-driver>org.postgresql.Driver</jdbc-driver>
+      <jdbc-url>jdbc:postgresql://localhost:5432/uber</jdbc-url>
+    </data-source>
+  </component>
+</project>
