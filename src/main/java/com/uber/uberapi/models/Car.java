@@ -10,7 +10,9 @@ import javax.persistence.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name="Car")
+@Table(name="Car", indexes = {
+        @Index(columnList = "color_id"),
+})
 
 public class Car extends Auditable{
     @ManyToOne

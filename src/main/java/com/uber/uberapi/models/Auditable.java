@@ -10,6 +10,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Objects;
+
 @MappedSuperclass //don't create table for Auditable class
 @EntityListeners(AuditingEntityListener.class)  // for proper working of Date fields
 @Getter
@@ -32,23 +34,20 @@ public abstract class Auditable implements Serializable {
     private Date updatedAt;
 
     @Override
-    public int hashCode() {
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        //check the class of both
+        if (o == null || getClass() != o.getClass()) return false;
+        Auditable auditable = (Auditable) o;
 
-        return id == null?0: id.hashCode();
+        //compare ids
+
+        return Objects.equals(id, auditable.id);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if(this == obj) return true; //same memory address
-        if(!this.getClass().equals(obj.getClass())) return false;
-        if(obj instanceof Auditable) {
-            Auditable auditableObj = (Auditable) obj;
-            if (id == null && auditableObj.id == null) return true;
-            if(id == null || auditableObj.id == null) return false;
-            return id == auditableObj.id;
-        }else{
-            return super.equals(obj);
-        }
+    public int hashCode() {
+        return id == null? 0: Objects.hash(id);
     }
 }
 /*compare objects in java
