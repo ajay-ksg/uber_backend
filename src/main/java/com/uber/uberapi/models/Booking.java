@@ -1,5 +1,7 @@
 package com.uber.uberapi.models;
 
+import com.uber.uberapi.Exceptions.InvalidActionForBookingStateException;
+import com.uber.uberapi.Exceptions.InvalidOTPException;
 import lombok.*;
 
 import javax.persistence.*;
@@ -50,8 +52,29 @@ public class Booking  extends  Auditable{
     private Date EndTime;
 
     @OneToOne
-    private  OTP otp;
+    private  OTP rideStartOTP;
 
     private Long totalDistanceMeters;
 
+    public void startRide(OTP otp) {
+        if(!bookingStatus.equals(BookingStatus.CAB_ARRIVED))
+        {
+            throw new InvalidActionForBookingStateException("Cannot start the Ride as Cab is not arrived yet.");
+        }
+
+        if(!rideStartOTP.ValidteEnteredOTP(otp,constants.RIDE_START_OTP_EXPIRY_MINUTES)){
+            throw new InvalidOTPException();
+        }
+
+        bookingStatus = BookingStatus.IN_RIDE;
+    }
+
+    public void endRide() {
+        if(!bookingStatus.equals(BookingStatus.IN_RIDE))
+        {
+            throw new InvalidActionForBookingStateException("Cannot end the Ride as doesn't started yet.");
+        }
+
+        bookingStatus = BookingStatus.COMPLETED;
+    }
 }

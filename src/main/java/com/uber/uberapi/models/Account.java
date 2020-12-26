@@ -18,6 +18,6 @@ public class Account extends Auditable {
     private String username;
     private String password;
 
-    @ManyToMany
+    @ManyToMany(fetch =  FetchType.EAGER)
     private List<Role> roles = new ArrayList<>();
 }

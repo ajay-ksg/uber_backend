@@ -11,7 +11,12 @@ import javax.persistence.Table;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "paymentgatwy")
-public class PaymentGatway extends Auditable{
-    private String name;
+@Table(name="constant")
+public class Constant extends Auditable {
+    public String name;
+    public String value;
+
+    public Long getAsLong(){
+        return Long.parseLong(value);
+    }
 }

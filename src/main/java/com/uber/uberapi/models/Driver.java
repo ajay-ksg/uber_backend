@@ -1,5 +1,6 @@
 package com.uber.uberapi.models;
 
+import com.uber.uberapi.Exceptions.UnapprovedDriverException;
 import lombok.*;
 
 import javax.persistence.*;
@@ -45,5 +46,11 @@ public class Driver extends Auditable {
 
     @OneToOne
     private NamedLocation work;
-    
+
+    public void setAvailablity(Boolean available) {
+        if(!approvalStatus.equals(DriverApprovalStatus.APPROVED) ){
+            throw new UnapprovedDriverException("Driver approval is denied ID" + getId());
+        }
+        isAvailable = available;
+    }
 }

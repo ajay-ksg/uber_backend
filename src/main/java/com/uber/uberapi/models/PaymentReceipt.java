@@ -14,13 +14,13 @@ import javax.persistence.Table;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "paymentreceipt" , indexes = {
-        @Index(columnList = "payment_gatway_id"),
+        @Index(columnList = "payment_gateway_id"),
 })
 public class PaymentReceipt extends Auditable{
 
     private  Double amount;
 
     @ManyToOne
-    private PaymentGatway paymentGatway;
+    private PaymentGateway paymentGateway;
 
 }
