@@ -3,6 +3,7 @@ package com.uber.uberapi.controller;
 import com.uber.uberapi.Exceptions.InvalidBookingException;
 import com.uber.uberapi.Exceptions.InvalidDriverException;
 import com.uber.uberapi.Services.BookingService;
+import com.uber.uberapi.Services.Constants;
 import com.uber.uberapi.models.Booking;
 import com.uber.uberapi.models.Driver;
 import com.uber.uberapi.models.OTP;
@@ -28,6 +29,9 @@ public class DriverController {
 
     @Autowired
     ReviewRepository reviewRepository;
+
+    @Autowired
+    Constants constants;
 
     BookingService bookingService;
     /*
@@ -79,12 +83,12 @@ public class DriverController {
             return booking;
     }
     @GetMapping("/{driverId}")
-    public Driver getDriverDetails(@RequestParam(name="driverId") Long driverId){
+    public Driver getDriverDetails(@PathVariable(name="driverId") Long driverId){
         return getDriverFromId((driverId));
     }
 
     @PatchMapping("/{driverId}")
-    public void changeAvailability(@RequestParam(name="driverId")Long driverId,
+    public void changeAvailability(@PathVariable(name="driverId")Long driverId,
                                    @RequestBody Boolean available){
 
         Driver driver = getDriverFromId(driverId);
@@ -93,21 +97,21 @@ public class DriverController {
     }
 
     @GetMapping("/{driverId}/bookings")
-    public List<Booking> getAllBookings(@RequestParam(name = "driverId")Long driverId ){
+    public List<Booking> getAllBookings(@PathVariable(name = "driverId")Long driverId ){
         Driver driver  = getDriverFromId(driverId);
         return driver.getBookings();
     }
 
     @GetMapping("/{driverId}/bookings/{bookingId}")
-    public Booking getBookingFromId(@RequestParam(name ="driverId")Long driverId,
-                                    @RequestParam(name="bookingId")Long bookingId){
+    public Booking getBookingFromId(@PathVariable(name ="driverId")Long driverId,
+                                    @PathVariable(name="bookingId")Long bookingId){
         //driver can only see the bookings that they drive
         return  getDriverBookingFromId(bookingId,driverId);
     }
 
     @PostMapping("/{driverId}/bookings/{bookingId}")
-    public void acceptBooking(@RequestParam(name ="driverId")Long driverId,
-                                    @RequestParam(name="bookingId")Long bookingId){
+    public void acceptBooking(@PathVariable(name ="driverId")Long driverId,
+                                    @PathVariable(name="bookingId")Long bookingId){
         Driver driver = getDriverFromId(driverId);
         Booking booking =   getDriverBookingFromId(bookingId,driverId);
 
@@ -117,8 +121,8 @@ public class DriverController {
     }
 
     @DeleteMapping("/{driverId}/bookings/{bookingId}")
-    public void cancelBooking(@RequestParam(name ="driverId")Long driverId,
-                              @RequestParam(name="bookingId")Long bookingId){
+    public void cancelBooking(@PathVariable(name ="driverId")Long driverId,
+                              @PathVariable(name="bookingId")Long bookingId){
         Driver driver = getDriverFromId(driverId);
         Booking booking =   getDriverBookingFromId(bookingId,driverId);
 
@@ -127,29 +131,30 @@ public class DriverController {
     }
 
     @PatchMapping("/{driverId}/bookings/{bookingId}/start")
-    public void startRide(@RequestParam(name="driverId")Long driverId,
-                          @RequestParam(name="bookingId")Long bookingId,
+    public void startRide(@PathVariable(name="driverId")Long driverId,
+                          @PathVariable(name="bookingId")Long bookingId,
                           @RequestBody OTP otp){
-        Driver driver = getDriverFromId(driverId);
+
         Booking booking =   getDriverBookingFromId(bookingId,driverId);
-        booking.startRide(otp);
+        booking.startRide(otp,constants.getRideStartOYPExpiryMinutes());
         bookingRepository.save(booking);
     }
 
     @PatchMapping("/{driverId}/bookings/{bookingId}/end")
-    public void endRide(@RequestParam(name="driverId")Long driverId,
-                          @RequestParam(name="bookingId")Long bookingId){
+    public void endRide(@PathVariable(name="driverId")Long driverId,
+                          @PathVariable(name="bookingId")Long bookingId){
         Driver driver = getDriverFromId(driverId);
         Booking booking =   getDriverBookingFromId(bookingId,driverId);
         booking.endRide();
+        driverRepository.save(driver);
         bookingRepository.save(booking);
     }
 
     @PatchMapping("/{driverId}/bookings/{bookingId}/rate")
-    public void rateTheRide(@RequestParam(name="driverId")Long driverId,
-                            @RequestParam(name="bookingId")Long bookingId,
+    public void rateTheRide(@PathVariable(name="driverId")Long driverId,
+                            @PathVariable(name="bookingId")Long bookingId,
                             @RequestBody Review review){
-        Driver driver = getDriverFromId(driverId);
+
         Booking booking =   getDriverBookingFromId(bookingId,driverId);
         Review reviewByDriver = Review.builder()
                                 .ratingOutOfFive(review.getRatingOutOfFive())
